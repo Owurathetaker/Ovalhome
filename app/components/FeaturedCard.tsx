@@ -11,7 +11,15 @@ type Props = {
 
 function waLink(phoneE164: string, code: string) {
   const digits = phoneE164.replace(/[^\d]/g, "");
-  const text = encodeURIComponent(`Hi Oval Home, I want to order mirror code: ${code}`);
+  const text = encodeURIComponent(
+    [
+      "Hi Oval Home 👋🏽",
+      `I want to order mirror code: ${code}`,
+      "Location: ____",
+      "Preferred size (optional): ____",
+      "When can I receive it?",
+    ].join("\n")
+  );
   return `https://wa.me/${digits}?text=${text}`;
 }
 
@@ -25,6 +33,10 @@ export default function FeaturedCard({ code, phoneE164, images }: Props) {
   // Modal (zoom)
   const [open, setOpen] = useState(false);
   const [zoomIndex, setZoomIndex] = useState(0);
+
+  // Touch (modal swipe)
+  const touchStartX = useRef<number | null>(null);
+  const touchEndX = useRef<number | null>(null);
 
   useEffect(() => {
     const el = stripRef.current;
@@ -54,6 +66,56 @@ export default function FeaturedCard({ code, phoneE164, images }: Props) {
     setOpen(true);
   };
 
+  const close = () => setOpen(false);
+
+  const prevZoom = () => {
+    if (!hasMany) return;
+    setZoomIndex((i) => (i - 1 + safeImages.length) % safeImages.length);
+  };
+
+  const nextZoom = () => {
+    if (!hasMany) return;
+    setZoomIndex((i) => (i + 1) % safeImages.length);
+  };
+
+  // Keyboard support for modal
+  useEffect(() => {
+    if (!open) return;
+
+    const onKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "Escape") close();
+      if (e.key === "ArrowLeft") prevZoom();
+      if (e.key === "ArrowRight") nextZoom();
+    };
+
+    window.addEventListener("keydown", onKeyDown);
+    return () => window.removeEventListener("keydown", onKeyDown);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [open, hasMany, safeImages.length]);
+
+  function onTouchStart(e: React.TouchEvent) {
+    touchStartX.current = e.touches[0]?.clientX ?? null;
+    touchEndX.current = null;
+  }
+
+  function onTouchMove(e: React.TouchEvent) {
+    touchEndX.current = e.touches[0]?.clientX ?? null;
+  }
+
+  function onTouchEnd() {
+    const start = touchStartX.current;
+    const end = touchEndX.current;
+    if (start == null || end == null) return;
+
+    const delta = end - start;
+    const threshold = 45; // swipe sensitivity
+    if (delta > threshold) prevZoom();
+    if (delta < -threshold) nextZoom();
+
+    touchStartX.current = null;
+    touchEndX.current = null;
+  }
+
   return (
     <>
       <article className="rounded-2xl border border-black/10 bg-white shadow-sm">
@@ -62,7 +124,10 @@ export default function FeaturedCard({ code, phoneE164, images }: Props) {
             <div
               ref={stripRef}
               className="flex w-full snap-x snap-mandatory overflow-x-auto scroll-smooth"
-              style={{ WebkitOverflowScrolling: "touch", scrollbarWidth: "none" }}
+              style={{
+                WebkitOverflowScrolling: "touch",
+                scrollbarWidth: "none",
+              }}
             >
               {safeImages.map((src, idx) => (
                 <button
@@ -85,13 +150,13 @@ export default function FeaturedCard({ code, phoneE164, images }: Props) {
             </div>
 
             {hasMany && (
-              <div className="pointer-events-none absolute top-2 right-2 rounded-full bg-white/80 px-2 py-1 text-[11px] text-slate-700">
+              <div className="pointer-events-none absolute right-2 top-2 rounded-full bg-white/80 px-2 py-1 text-[11px] text-slate-700">
                 Swipe
               </div>
             )}
           </div>
 
-          {/* Dots moved OUTSIDE the photo area */}
+          {/* Dots OUTSIDE photo area */}
           {hasMany && (
             <div className="mt-2 flex items-center justify-center gap-2">
               {safeImages.map((_, i) => (
@@ -122,17 +187,20 @@ export default function FeaturedCard({ code, phoneE164, images }: Props) {
             Order on WhatsApp
           </a>
 
-          <p className="mt-2 text-center text-xs text-slate-500">Tap image to zoom</p>
+          <p className="mt-2 text-center text-xs text-slate-500">
+            Tap image to zoom
+          </p>
         </div>
       </article>
 
+      {/* Modal */}
       {open && (
         <div
           className="fixed inset-0 z-50 grid place-items-center bg-black/70 p-4"
           role="dialog"
           aria-modal="true"
           aria-label={`Zoomed view for ${code}`}
-          onClick={() => setOpen(false)}
+          onClick={close}
         >
           <div
             className="relative w-full max-w-3xl overflow-hidden rounded-2xl bg-black"
@@ -142,14 +210,19 @@ export default function FeaturedCard({ code, phoneE164, images }: Props) {
               <p className="text-sm font-semibold">{code}</p>
               <button
                 type="button"
-                onClick={() => setOpen(false)}
+                onClick={close}
                 className="rounded-full bg-white/10 px-3 py-1 text-sm"
               >
                 Close
               </button>
             </div>
 
-            <div className="relative h-[70vh]">
+            <div
+              className="relative h-[70vh]"
+              onTouchStart={onTouchStart}
+              onTouchMove={onTouchMove}
+              onTouchEnd={onTouchEnd}
+            >
               <Image
                 src={safeImages[zoomIndex]}
                 alt={`${code} zoomed`}
@@ -158,15 +231,37 @@ export default function FeaturedCard({ code, phoneE164, images }: Props) {
                 className="object-contain"
                 priority
               />
+
+              {/* Clickable overlay arrows */}
+              {hasMany && (
+                <>
+                  <button
+                    type="button"
+                    onClick={prevZoom}
+                    aria-label="Previous image"
+                    className="absolute left-3 top-1/2 -translate-y-1/2 rounded-full bg-white/80 px-3 py-2 text-sm font-medium text-slate-900 shadow hover:bg-white"
+                  >
+                    ‹
+                  </button>
+                  <button
+                    type="button"
+                    onClick={nextZoom}
+                    aria-label="Next image"
+                    className="absolute right-3 top-1/2 -translate-y-1/2 rounded-full bg-white/80 px-3 py-2 text-sm font-medium text-slate-900 shadow hover:bg-white"
+                  >
+                    ›
+                  </button>
+                </>
+              )}
             </div>
 
+            {/* Bottom controls */}
             {hasMany && (
               <div className="flex items-center justify-between gap-3 px-4 py-3">
                 <button
                   type="button"
-                  onClick={() => setZoomIndex((p) => Math.max(0, p - 1))}
-                  disabled={zoomIndex === 0}
-                  className="rounded-xl bg-white/10 px-4 py-2 text-sm text-white disabled:opacity-40"
+                  onClick={prevZoom}
+                  className="rounded-xl bg-white/10 px-4 py-2 text-sm text-white"
                 >
                   Prev
                 </button>
@@ -177,11 +272,8 @@ export default function FeaturedCard({ code, phoneE164, images }: Props) {
 
                 <button
                   type="button"
-                  onClick={() =>
-                    setZoomIndex((p) => Math.min(safeImages.length - 1, p + 1))
-                  }
-                  disabled={zoomIndex === safeImages.length - 1}
-                  className="rounded-xl bg-white/10 px-4 py-2 text-sm text-white disabled:opacity-40"
+                  onClick={nextZoom}
+                  className="rounded-xl bg-white/10 px-4 py-2 text-sm text-white"
                 >
                   Next
                 </button>

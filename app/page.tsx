@@ -3,7 +3,7 @@ import Image from "next/image";
 import FeaturedCard from "./components/FeaturedCard";
 
 const PHONE_E164 = "+233554053999";
-const WA_LINK = "https://wa.me/233554053999";
+const WA_NUMBER = "233554053999";
 const HERO_SRC = "/hero-mirror.jpg";
 
 // Social links
@@ -13,7 +13,6 @@ const SOCIALS = {
   tiktok: "https://www.tiktok.com/@oval.home?_r=1&_t=ZS-93Z2gicwpyn",
 };
 
-// Product display order
 const PRODUCT_ORDER = [
   "Z-008",
   "Z-005",
@@ -29,7 +28,6 @@ const PRODUCT_ORDER = [
 
 type Code = (typeof PRODUCT_ORDER)[number];
 
-// Images per product
 const PRODUCT_IMAGES: Record<Code, string[]> = {
   "Z-008": ["/Z-008_card.jpg", "/Z-008_1.jpg", "/Z-008_2.jpg", "/Z-008_3.jpg"],
   "Z-005": ["/Z-005_card.jpg", "/Z-005_1.jpg", "/Z-005_2.jpg", "/Z-005_3.jpg"],
@@ -37,21 +35,18 @@ const PRODUCT_IMAGES: Record<Code, string[]> = {
   "Z-002": ["/Z-002_card.jpg", "/Z-002_1.jpg", "/Z-002_2.jpg", "/Z-002_3.jpg"],
   "L-1164": ["/L-1164_card.jpg", "/L-1164_1.jpg"],
   "Z-001": ["/Z-001_card.jpg", "/Z-001_1.jpg", "/Z-001_2.jpg", "/Z-001_3.jpg"],
-
   "F-005": ["/F-005_card.jpg", "/F-005_1.jpg", "/F-005_2.jpg", "/F-005_3.jpg"],
   "Y-009": ["/Y-009_card.jpg", "/Y-009_1.jpg", "/Y-009_2.jpg", "/Y-009_3.jpg"],
-
-  // ✅ UPDATED: L-1072 now has raw photos
-  "L-1072": [
-    "/L-1072_card.jpg",
-    "/L-1072_1.jpg",
-    "/L-1072_2.jpg",
-    "/L-1072_3.jpg",
-  ],
-
-  // Card only
+  "L-1072": ["/L-1072_card.jpg", "/L-1072_1.jpg", "/L-1072_2.jpg", "/L-1072_3.jpg"],
   "Z-010": ["/Z-010_card.jpg"],
 };
+
+function waLink(message?: string) {
+  const text = message
+    ? message
+    : "Hi Oval Home 👋🏽\nI want to order an LED mirror.\nLocation: ____\nWhen can I receive it?";
+  return `https://wa.me/${WA_NUMBER}?text=${encodeURIComponent(text)}`;
+}
 
 function SocialIcon({
   href,
@@ -68,8 +63,7 @@ function SocialIcon({
       target="_blank"
       rel="noreferrer"
       aria-label={label}
-      className="group inline-flex h-9 w-9 items-center justify-center rounded-full border border-black/10 bg-white shadow-sm transition
-                 hover:-translate-y-0.5 hover:shadow-md active:translate-y-0"
+      className="group inline-flex h-9 w-9 items-center justify-center rounded-full border border-black/10 bg-white shadow-sm transition hover:-translate-y-0.5 hover:shadow-md active:translate-y-0"
     >
       <span className="text-slate-700 transition group-hover:text-slate-900">
         {children}
@@ -117,21 +111,63 @@ function TikTokSvg() {
   );
 }
 
+function InfoPill({ children }: { children: React.ReactNode }) {
+  return (
+    <span className="inline-flex items-center rounded-full border border-black/10 bg-white px-3 py-1 text-[11px] text-slate-700 shadow-sm">
+      {children}
+    </span>
+  );
+}
+
+function MiniCard({
+  title,
+  desc,
+  cta,
+  href,
+}: {
+  title: string;
+  desc: string;
+  cta: string;
+  href: string;
+}) {
+  return (
+    <a
+      href={href}
+      target="_blank"
+      rel="noreferrer"
+      className="group rounded-2xl border border-black/10 bg-white p-4 shadow-sm transition hover:-translate-y-0.5 hover:shadow-md"
+    >
+      <p className="text-sm font-semibold text-slate-900">{title}</p>
+      <p className="mt-1 text-xs text-slate-600">{desc}</p>
+      <p className="mt-3 text-xs font-medium text-slate-900 underline decoration-black/20 underline-offset-4">
+        {cta}
+      </p>
+    </a>
+  );
+}
+
 export default function Page() {
+  const WA_LINK = waLink();
+
   return (
     <main className="min-h-screen bg-[#fbf7f2] text-slate-900">
       {/* Header */}
       <header className="sticky top-0 z-20 border-b border-black/5 bg-[#fbf7f2]/90 backdrop-blur">
         <div className="border-b border-black/5 bg-white/60">
-          <div className="mx-auto max-w-6xl px-4 py-2 text-center text-[11px] text-slate-600">
-            Nationwide delivery • Fast WhatsApp ordering
+          <div className="mx-auto max-w-6xl px-4 py-2 text-center text-[11px] text-slate-700">
+            Accra: same-day / next-day delivery • Nationwide delivery available
           </div>
         </div>
 
         <div className="mx-auto flex max-w-6xl items-center justify-between px-4 py-3">
           <div className="flex items-center gap-3">
             <div className="relative h-9 w-9 overflow-hidden rounded-full border border-black/10 bg-white">
-              <Image src="/oval-logo.png" alt="Oval Home" fill className="object-contain" />
+              <Image
+                src="/oval-logo.png"
+                alt="Oval Home"
+                fill
+                className="object-contain"
+              />
             </div>
             <div>
               <p className="text-sm font-semibold">Oval Home</p>
@@ -153,26 +189,122 @@ export default function Page() {
       {/* Hero */}
       <section className="mx-auto max-w-6xl px-4 pt-5">
         <div className="overflow-hidden rounded-3xl border border-black/10 bg-white shadow-sm">
-          <div className="relative h-[240px] sm:h-[320px] md:h-[420px] lg:h-[460px] bg-[#0b0f14]">
-            <Image src={HERO_SRC} alt="Oval Home LED mirror" fill priority className="object-contain" />
+          <div className="relative h-[240px] bg-[#0b0f14] sm:h-[320px] md:h-[420px] lg:h-[460px]">
+            <Image
+              src={HERO_SRC}
+              alt="Oval Home LED mirror"
+              fill
+              priority
+              className="object-contain"
+            />
           </div>
 
           <div className="p-5 md:p-6">
-            <h1 className="text-2xl font-semibold md:text-3xl">
+            <div className="flex flex-wrap gap-2">
+              <InfoPill>Imported quality</InfoPill>
+              <InfoPill>Clean finishing</InfoPill>
+              <InfoPill>Accra fast delivery</InfoPill>
+            </div>
+
+            <h1 className="mt-3 text-2xl font-semibold md:text-3xl">
               Luxury LED mirrors for modern spaces.
             </h1>
             <p className="mt-2 text-sm text-slate-600">
               Swipe photos for angles. Tap to zoom. Use the code to order on WhatsApp.
+            </p>
+
+            <div className="mt-4 flex flex-wrap gap-3">
+              <a
+                href="#categories"
+                className="rounded-full border border-black/10 bg-white px-4 py-2 text-sm font-medium text-slate-900 shadow-sm hover:bg-black/[0.02]"
+              >
+                Browse categories
+              </a>
+              <a
+                href="#designs"
+                className="rounded-full border border-black/10 bg-white px-4 py-2 text-sm font-medium text-slate-900 shadow-sm hover:bg-black/[0.02]"
+              >
+                View all designs
+              </a>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Categories (Tier 2 conversion + search intent) */}
+      <section id="categories" className="mx-auto max-w-6xl px-4 pt-8">
+        <div className="mb-4 flex items-end justify-between">
+          <h2 className="text-lg font-semibold">Shop by category</h2>
+          <p className="text-xs text-slate-500">Tap → WhatsApp</p>
+        </div>
+
+        <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+          <MiniCard
+            title="LED Bathroom Mirrors"
+            desc="Modern LED designs for bathrooms."
+            cta="Ask for available LED designs"
+            href={waLink(
+              "Hi Oval Home 👋🏽\nI’m interested in LED Bathroom Mirrors.\nLocation: ____\nBudget range: ____\nPlease show available designs."
+            )}
+          />
+          <MiniCard
+            title="Decorative Mirrors"
+            desc="Elegant pieces for interiors."
+            cta="Ask for decorative options"
+            href={waLink(
+              "Hi Oval Home 👋🏽\nI’m interested in Decorative Mirrors.\nLocation: ____\nRoom: ____\nPlease show available designs."
+            )}
+          />
+          <MiniCard
+            title="Wall Mirrors"
+            desc="Clean shapes and modern looks."
+            cta="Ask for wall mirror options"
+            href={waLink(
+              "Hi Oval Home 👋🏽\nI’m interested in Wall Mirrors.\nLocation: ____\nSize preference: ____\nPlease show options."
+            )}
+          />
+          <MiniCard
+            title="Custom Enquiries"
+            desc="Send size + space and we recommend."
+            cta="Send your details"
+            href={waLink(
+              "Hi Oval Home 👋🏽\nI want a mirror recommendation.\nLocation: ____\nSpace: ____\nPreferred size: ____\nBudget: ____"
+            )}
+          />
+        </div>
+      </section>
+
+      {/* Delivery + trust (Tier 2 credibility) */}
+      <section className="mx-auto max-w-6xl px-4 py-8">
+        <div className="grid gap-4 md:grid-cols-3">
+          <div className="rounded-2xl border border-black/10 bg-white p-5 shadow-sm">
+            <p className="text-sm font-semibold">Delivery</p>
+            <p className="mt-2 text-sm text-slate-600">
+              Accra: same-day / next-day delivery
+              <br />
+              Nationwide: 2–3 days
+            </p>
+          </div>
+          <div className="rounded-2xl border border-black/10 bg-white p-5 shadow-sm">
+            <p className="text-sm font-semibold">Packaging</p>
+            <p className="mt-2 text-sm text-slate-600">
+              Mirrors are securely packaged for safe delivery.
+            </p>
+          </div>
+          <div className="rounded-2xl border border-black/10 bg-white p-5 shadow-sm">
+            <p className="text-sm font-semibold">Quality</p>
+            <p className="mt-2 text-sm text-slate-600">
+              Imported designs with clean finishing for modern spaces.
             </p>
           </div>
         </div>
       </section>
 
       {/* All Designs */}
-      <section id="designs" className="mx-auto max-w-6xl px-4 py-8">
+      <section id="designs" className="mx-auto max-w-6xl px-4 pb-8">
         <div className="mb-4 flex items-end justify-between">
           <h2 className="text-lg font-semibold">All Designs</h2>
-          <p className="text-xs text-slate-500">10 products</p>
+          <p className="text-xs text-slate-500">{PRODUCT_ORDER.length} products</p>
         </div>
 
         <div className="grid gap-5 md:grid-cols-2 lg:grid-cols-3">
@@ -189,16 +321,22 @@ export default function Page() {
 
       {/* Footer */}
       <footer className="border-t border-black/5 bg-white">
-        <div className="mx-auto max-w-6xl px-4 py-8 flex flex-col gap-4 md:flex-row md:justify-between">
+        <div className="mx-auto flex max-w-6xl flex-col gap-4 px-4 py-8 md:flex-row md:justify-between">
           <div>
             <p className="font-medium">Oval Home</p>
             <p className="text-xs text-slate-500">Luxury LED Mirrors</p>
           </div>
 
           <div className="flex items-center gap-2">
-            <SocialIcon href={SOCIALS.instagram} label="Instagram"><InstagramSvg /></SocialIcon>
-            <SocialIcon href={SOCIALS.facebook} label="Facebook"><FacebookSvg /></SocialIcon>
-            <SocialIcon href={SOCIALS.tiktok} label="TikTok"><TikTokSvg /></SocialIcon>
+            <SocialIcon href={SOCIALS.instagram} label="Instagram">
+              <InstagramSvg />
+            </SocialIcon>
+            <SocialIcon href={SOCIALS.facebook} label="Facebook">
+              <FacebookSvg />
+            </SocialIcon>
+            <SocialIcon href={SOCIALS.tiktok} label="TikTok">
+              <TikTokSvg />
+            </SocialIcon>
 
             <a
               href={WA_LINK}

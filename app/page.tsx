@@ -231,7 +231,7 @@ export default function Page() {
         </div>
       </section>
 
-      {/* Categories (Tier 2 conversion + search intent) */}
+      {/* Categories */}
       <section id="categories" className="mx-auto max-w-6xl px-4 pt-8">
         <div className="mb-4 flex items-end justify-between">
           <h2 className="text-lg font-semibold">Shop by category</h2>
@@ -274,7 +274,7 @@ export default function Page() {
         </div>
       </section>
 
-      {/* Delivery + trust (Tier 2 credibility) */}
+      {/* Delivery + trust */}
       <section className="mx-auto max-w-6xl px-4 py-8">
         <div className="grid gap-4 md:grid-cols-3">
           <div className="rounded-2xl border border-black/10 bg-white p-5 shadow-sm">
@@ -318,27 +318,29 @@ export default function Page() {
           ))}
         </div>
       </section>
+
+      {/* SEO content block */}
       <section className="mx-auto max-w-6xl px-4 pb-10">
-  <div className="rounded-3xl border border-black/10 bg-white p-5 shadow-sm md:p-6">
-    <h2 className="text-lg font-semibold md:text-xl">
-      LED Mirrors in Accra, Ghana
-    </h2>
+        <div className="rounded-3xl border border-black/10 bg-white p-5 shadow-sm md:p-6">
+          <h2 className="text-lg font-semibold md:text-xl">
+            LED Mirrors in Accra, Ghana
+          </h2>
 
-    <p className="mt-3 text-sm leading-7 text-slate-600">
-      Oval Home supplies luxury LED mirrors for bathrooms, bedrooms, dressing
-      areas, and modern interiors in Accra and across Ghana. We focus on clean
-      designs, quality finishing, and fast delivery for customers who want
-      elegant mirrors for their spaces.
-    </p>
+          <p className="mt-3 text-sm leading-7 text-slate-600">
+            Oval Home supplies premium LED mirrors and decorative mirrors for bathrooms,
+            bedrooms, dressing areas, and modern interiors in Accra and across Ghana.
+            Our designs combine modern lighting, clean finishing, and reliable delivery
+            for customers who want elegant mirrors for their spaces.
+          </p>
 
-    <p className="mt-3 text-sm leading-7 text-slate-600">
-      If you are looking for bathroom mirrors, decorative mirrors, or modern LED
-      mirrors in Ghana, you can browse available designs on this page and order
-      directly on WhatsApp. We offer same-day or next-day delivery in Accra and
-      nationwide delivery across Ghana.
-    </p>
-  </div>
-</section>
+          <p className="mt-3 text-sm leading-7 text-slate-600">
+            If you are looking for bathroom mirrors, decorative mirrors, or modern LED
+            mirrors in Ghana, you can browse available designs on this page and order
+            directly on WhatsApp. We offer same-day or next-day delivery in Accra and
+            nationwide delivery across Ghana.
+          </p>
+        </div>
+      </section>
 
       {/* Footer */}
       <footer className="border-t border-black/5 bg-white">
@@ -370,6 +372,17 @@ export default function Page() {
           </div>
         </div>
       </footer>
+
+      {/* Floating WhatsApp CTA */}
+      <a
+        href={WA_LINK}
+        target="_blank"
+        rel="noreferrer"
+        aria-label="Chat with Oval Home on WhatsApp"
+        className="fixed bottom-5 right-5 z-50 rounded-full bg-green-500 px-5 py-3 text-sm font-semibold text-white shadow-lg transition hover:bg-green-600"
+      >
+        WhatsApp
+      </a>
     </main>
   );
 }

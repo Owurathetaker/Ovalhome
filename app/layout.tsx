@@ -13,7 +13,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000"),
+  metadataBase: new URL("https://ovalhome.vercel.app"),
   title: "Oval Home — Luxury LED Mirrors",
   description:
     "Luxury LED mirrors with nationwide delivery. Browse designs and order easily on WhatsApp.",

@@ -318,6 +318,27 @@ export default function Page() {
           ))}
         </div>
       </section>
+      <section className="mx-auto max-w-6xl px-4 pb-10">
+  <div className="rounded-3xl border border-black/10 bg-white p-5 shadow-sm md:p-6">
+    <h2 className="text-lg font-semibold md:text-xl">
+      LED Mirrors in Accra, Ghana
+    </h2>
+
+    <p className="mt-3 text-sm leading-7 text-slate-600">
+      Oval Home supplies luxury LED mirrors for bathrooms, bedrooms, dressing
+      areas, and modern interiors in Accra and across Ghana. We focus on clean
+      designs, quality finishing, and fast delivery for customers who want
+      elegant mirrors for their spaces.
+    </p>
+
+    <p className="mt-3 text-sm leading-7 text-slate-600">
+      If you are looking for bathroom mirrors, decorative mirrors, or modern LED
+      mirrors in Ghana, you can browse available designs on this page and order
+      directly on WhatsApp. We offer same-day or next-day delivery in Accra and
+      nationwide delivery across Ghana.
+    </p>
+  </div>
+</section>
 
       {/* Footer */}
       <footer className="border-t border-black/5 bg-white">

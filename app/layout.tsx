@@ -34,9 +34,35 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const structuredData = {
+    "@context": "https://schema.org",
+    "@type": "LocalBusiness",
+    "@id": "https://ovalhome.vercel.app",
+    name: "Oval Home",
+    image: "https://ovalhome.vercel.app/og.jpg",
+    url: "https://ovalhome.vercel.app",
+    telephone: "+233554053999",
+    priceRange: "$$",
+    areaServed: "Ghana",
+    address: {
+      "@type": "PostalAddress",
+      addressLocality: "Accra",
+      addressCountry: "GH",
+    },
+    description:
+      "Oval Home supplies premium LED mirrors with fast delivery in Accra and nationwide delivery across Ghana.",
+    sameAs: ["https://wa.me/233554053999"],
+  };
+
   return (
     <html lang="en">
       <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify(structuredData),
+          }}
+        />
         {children}
       </body>
     </html>

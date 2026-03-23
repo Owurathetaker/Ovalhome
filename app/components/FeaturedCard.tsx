@@ -9,12 +9,57 @@ type Props = {
   images: string[]; // first image should be the "card" image
 };
 
+const PRODUCT_META: Record<string, { name: string; desc: string }> = {
+  "Z-008": {
+    name: "Full-Length LED Mirror",
+    desc: "Ideal for bedrooms, dressing spaces, and outfit checks.",
+  },
+  "Z-005": {
+    name: "Decorative Wall Mirror",
+    desc: "A clean modern piece for stylish interiors and statement walls.",
+  },
+  "L-1127": {
+    name: "Bathroom LED Mirror",
+    desc: "Perfect for modern bathrooms with a clean premium finish.",
+  },
+  "Z-002": {
+    name: "Modern Wall Mirror",
+    desc: "A sleek option for everyday spaces that need a polished look.",
+  },
+  "L-1164": {
+    name: "Minimal LED Mirror",
+    desc: "Simple and elegant design for clean modern interiors.",
+  },
+  "Z-001": {
+    name: "Premium Vanity Mirror",
+    desc: "Great for dressing areas, beauty spaces, and refined setups.",
+  },
+  "F-005": {
+    name: "Statement LED Mirror",
+    desc: "Designed to stand out in stylish rooms and modern homes.",
+  },
+  "Y-009": {
+    name: "Decor Accent Mirror",
+    desc: "Adds a soft luxury touch to bedrooms, halls, and living spaces.",
+  },
+  "L-1072": {
+    name: "Luxury Bathroom Mirror",
+    desc: "A premium pick for bathrooms and elegant interior upgrades.",
+  },
+  "Z-010": {
+    name: "Classic LED Mirror",
+    desc: "A clean versatile mirror for modern spaces and everyday use.",
+  },
+};
+
 function waLink(phoneE164: string, code: string) {
   const digits = phoneE164.replace(/[^\d]/g, "");
+  const productName = PRODUCT_META[code]?.name ?? "LED Mirror";
   const text = encodeURIComponent(
     [
       "Hi Oval Home 👋🏽",
-      `I want to order mirror code: ${code}`,
+      `I want to order: ${productName}`,
+      `Mirror code: ${code}`,
       "Location: ____",
       "Preferred size (optional): ____",
       "When can I receive it?",
@@ -37,6 +82,11 @@ export default function FeaturedCard({ code, phoneE164, images }: Props) {
   // Touch (modal swipe)
   const touchStartX = useRef<number | null>(null);
   const touchEndX = useRef<number | null>(null);
+
+  const meta = PRODUCT_META[code] ?? {
+    name: "Luxury LED Mirror",
+    desc: "Clean modern mirror for stylish spaces.",
+  };
 
   useEffect(() => {
     const el = stripRef.current;
@@ -78,7 +128,6 @@ export default function FeaturedCard({ code, phoneE164, images }: Props) {
     setZoomIndex((i) => (i + 1) % safeImages.length);
   };
 
-  // Keyboard support for modal
   useEffect(() => {
     if (!open) return;
 
@@ -90,7 +139,6 @@ export default function FeaturedCard({ code, phoneE164, images }: Props) {
 
     window.addEventListener("keydown", onKeyDown);
     return () => window.removeEventListener("keydown", onKeyDown);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [open, hasMany, safeImages.length]);
 
   function onTouchStart(e: React.TouchEvent) {
@@ -108,7 +156,7 @@ export default function FeaturedCard({ code, phoneE164, images }: Props) {
     if (start == null || end == null) return;
 
     const delta = end - start;
-    const threshold = 45; // swipe sensitivity
+    const threshold = 45;
     if (delta > threshold) prevZoom();
     if (delta < -threshold) nextZoom();
 
@@ -139,7 +187,7 @@ export default function FeaturedCard({ code, phoneE164, images }: Props) {
                 >
                   <Image
                     src={src}
-                    alt={`${code} mirror`}
+                    alt={`${meta.name} - ${code}`}
                     fill
                     sizes="(max-width: 768px) 90vw, (max-width: 1200px) 45vw, 33vw"
                     className="object-contain p-2"
@@ -156,7 +204,6 @@ export default function FeaturedCard({ code, phoneE164, images }: Props) {
             )}
           </div>
 
-          {/* Dots OUTSIDE photo area */}
           {hasMany && (
             <div className="mt-2 flex items-center justify-center gap-2">
               {safeImages.map((_, i) => (
@@ -173,9 +220,10 @@ export default function FeaturedCard({ code, phoneE164, images }: Props) {
             </div>
           )}
 
-          <div className="mt-3 flex items-center justify-between">
-            <p className="text-sm font-semibold">{code}</p>
-            <p className="text-xs text-slate-500">Luxury LED Mirror</p>
+          <div className="mt-3">
+            <p className="text-sm font-semibold text-slate-900">{meta.name}</p>
+            <p className="mt-1 text-xs text-slate-500">Code: {code}</p>
+            <p className="mt-2 text-xs leading-5 text-slate-600">{meta.desc}</p>
           </div>
 
           <a
@@ -184,16 +232,15 @@ export default function FeaturedCard({ code, phoneE164, images }: Props) {
             rel="noreferrer"
             className="mt-3 block rounded-xl bg-slate-900 px-4 py-3 text-center text-sm font-medium text-white"
           >
-            Order on WhatsApp
+            Check price & order
           </a>
 
           <p className="mt-2 text-center text-xs text-slate-500">
-            Tap image to zoom
+            Swipe for more angles • Tap to zoom
           </p>
         </div>
       </article>
 
-      {/* Modal */}
       {open && (
         <div
           className="fixed inset-0 z-50 grid place-items-center bg-black/70 p-4"
@@ -207,7 +254,10 @@ export default function FeaturedCard({ code, phoneE164, images }: Props) {
             onClick={(e) => e.stopPropagation()}
           >
             <div className="flex items-center justify-between px-4 py-3 text-white">
-              <p className="text-sm font-semibold">{code}</p>
+              <div>
+                <p className="text-sm font-semibold">{meta.name}</p>
+                <p className="text-xs text-white/70">Code: {code}</p>
+              </div>
               <button
                 type="button"
                 onClick={close}
@@ -225,14 +275,13 @@ export default function FeaturedCard({ code, phoneE164, images }: Props) {
             >
               <Image
                 src={safeImages[zoomIndex]}
-                alt={`${code} zoomed`}
+                alt={`${meta.name} - ${code} zoomed`}
                 fill
                 sizes="100vw"
                 className="object-contain"
                 priority
               />
 
-              {/* Clickable overlay arrows */}
               {hasMany && (
                 <>
                   <button
@@ -255,7 +304,6 @@ export default function FeaturedCard({ code, phoneE164, images }: Props) {
               )}
             </div>
 
-            {/* Bottom controls */}
             {hasMany && (
               <div className="flex items-center justify-between gap-3 px-4 py-3">
                 <button

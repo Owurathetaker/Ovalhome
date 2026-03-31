@@ -1,14 +1,15 @@
 "use client";
-
+ 
 import Image from "next/image";
 import { useEffect, useMemo, useRef, useState } from "react";
-
+ 
 type Props = {
   code: string;
-  phoneE164: string; // e.g. +233554053999
-  images: string[]; // first image should be the "card" image
+  phoneE164: string;
+  images: string[];
+  price: number;
 };
-
+ 
 const PRODUCT_META: Record<string, { name: string; desc: string }> = {
   "Z-008": {
     name: "Full-Length LED Mirror",
@@ -51,8 +52,8 @@ const PRODUCT_META: Record<string, { name: string; desc: string }> = {
     desc: "A clean versatile mirror for modern spaces and everyday use.",
   },
 };
-
-function waLink(phoneE164: string, code: string) {
+ 
+function waLink(phoneE164: string, code: string, price: number) {
   const digits = phoneE164.replace(/[^\d]/g, "");
   const productName = PRODUCT_META[code]?.name ?? "LED Mirror";
   const text = encodeURIComponent(
@@ -60,6 +61,7 @@ function waLink(phoneE164: string, code: string) {
       "Hi Oval Home 👋🏽",
       `I want to order: ${productName}`,
       `Mirror code: ${code}`,
+      `Price shown: GHS ${price}`,
       "Location: ____",
       "Preferred size (optional): ____",
       "When can I receive it?",
@@ -67,103 +69,106 @@ function waLink(phoneE164: string, code: string) {
   );
   return `https://wa.me/${digits}?text=${text}`;
 }
-
-export default function FeaturedCard({ code, phoneE164, images }: Props) {
+ 
+export default function FeaturedCard({
+  code,
+  phoneE164,
+  images,
+  price,
+}: Props) {
   const safeImages = useMemo(() => images.filter(Boolean), [images]);
   const hasMany = safeImages.length > 1;
-
+ 
   const [active, setActive] = useState(0);
   const stripRef = useRef<HTMLDivElement | null>(null);
-
-  // Modal (zoom)
+ 
   const [open, setOpen] = useState(false);
   const [zoomIndex, setZoomIndex] = useState(0);
-
-  // Touch (modal swipe)
+ 
   const touchStartX = useRef<number | null>(null);
   const touchEndX = useRef<number | null>(null);
-
+ 
   const meta = PRODUCT_META[code] ?? {
     name: "Luxury LED Mirror",
     desc: "Clean modern mirror for stylish spaces.",
   };
-
+ 
   useEffect(() => {
     const el = stripRef.current;
     if (!el) return;
-
+ 
     const onScroll = () => {
       const w = el.clientWidth || 1;
       const idx = Math.round(el.scrollLeft / w);
       setActive(Math.max(0, Math.min(idx, safeImages.length - 1)));
     };
-
+ 
     el.addEventListener("scroll", onScroll, { passive: true });
     onScroll();
-
+ 
     return () => el.removeEventListener("scroll", onScroll);
   }, [safeImages.length]);
-
+ 
   const goTo = (idx: number) => {
     const el = stripRef.current;
     if (!el) return;
     const w = el.clientWidth || 1;
     el.scrollTo({ left: idx * w, behavior: "smooth" });
   };
-
+ 
   const onTapImage = () => {
     setZoomIndex(active);
     setOpen(true);
   };
-
+ 
   const close = () => setOpen(false);
-
+ 
   const prevZoom = () => {
     if (!hasMany) return;
     setZoomIndex((i) => (i - 1 + safeImages.length) % safeImages.length);
   };
-
+ 
   const nextZoom = () => {
     if (!hasMany) return;
     setZoomIndex((i) => (i + 1) % safeImages.length);
   };
-
+ 
   useEffect(() => {
     if (!open) return;
-
+ 
     const onKeyDown = (e: KeyboardEvent) => {
       if (e.key === "Escape") close();
       if (e.key === "ArrowLeft") prevZoom();
       if (e.key === "ArrowRight") nextZoom();
     };
-
+ 
     window.addEventListener("keydown", onKeyDown);
     return () => window.removeEventListener("keydown", onKeyDown);
   }, [open, hasMany, safeImages.length]);
-
+ 
   function onTouchStart(e: React.TouchEvent) {
     touchStartX.current = e.touches[0]?.clientX ?? null;
     touchEndX.current = null;
   }
-
+ 
   function onTouchMove(e: React.TouchEvent) {
     touchEndX.current = e.touches[0]?.clientX ?? null;
   }
-
+ 
   function onTouchEnd() {
     const start = touchStartX.current;
     const end = touchEndX.current;
     if (start == null || end == null) return;
-
+ 
     const delta = end - start;
     const threshold = 45;
     if (delta > threshold) prevZoom();
     if (delta < -threshold) nextZoom();
-
+ 
     touchStartX.current = null;
     touchEndX.current = null;
   }
-
+ 
   return (
     <>
       <article className="rounded-2xl border border-black/10 bg-white shadow-sm">
@@ -196,14 +201,14 @@ export default function FeaturedCard({ code, phoneE164, images }: Props) {
                 </button>
               ))}
             </div>
-
+ 
             {hasMany && (
               <div className="pointer-events-none absolute right-2 top-2 rounded-full bg-white/80 px-2 py-1 text-[11px] text-slate-700">
                 Swipe
               </div>
             )}
           </div>
-
+ 
           {hasMany && (
             <div className="mt-2 flex items-center justify-center gap-2">
               {safeImages.map((_, i) => (
@@ -219,28 +224,31 @@ export default function FeaturedCard({ code, phoneE164, images }: Props) {
               ))}
             </div>
           )}
-
+ 
           <div className="mt-3">
             <p className="text-sm font-semibold text-slate-900">{meta.name}</p>
             <p className="mt-1 text-xs text-slate-500">Code: {code}</p>
+            <p className="mt-1 text-sm font-semibold text-slate-900">
+              GHS {price}
+            </p>
             <p className="mt-2 text-xs leading-5 text-slate-600">{meta.desc}</p>
           </div>
-
+ 
           <a
-            href={waLink(phoneE164, code)}
+            href={waLink(phoneE164, code, price)}
             target="_blank"
             rel="noreferrer"
             className="mt-3 block rounded-xl bg-slate-900 px-4 py-3 text-center text-sm font-medium text-white"
           >
             Check price & order
           </a>
-
+ 
           <p className="mt-2 text-center text-xs text-slate-500">
             Swipe for more angles • Tap to zoom
           </p>
         </div>
       </article>
-
+ 
       {open && (
         <div
           className="fixed inset-0 z-50 grid place-items-center bg-black/70 p-4"
@@ -256,7 +264,9 @@ export default function FeaturedCard({ code, phoneE164, images }: Props) {
             <div className="flex items-center justify-between px-4 py-3 text-white">
               <div>
                 <p className="text-sm font-semibold">{meta.name}</p>
-                <p className="text-xs text-white/70">Code: {code}</p>
+                <p className="text-xs text-white/70">
+                  Code: {code} • GHS {price}
+                </p>
               </div>
               <button
                 type="button"
@@ -266,7 +276,7 @@ export default function FeaturedCard({ code, phoneE164, images }: Props) {
                 Close
               </button>
             </div>
-
+ 
             <div
               className="relative h-[70vh]"
               onTouchStart={onTouchStart}
@@ -281,7 +291,7 @@ export default function FeaturedCard({ code, phoneE164, images }: Props) {
                 className="object-contain"
                 priority
               />
-
+ 
               {hasMany && (
                 <>
                   <button
@@ -303,7 +313,7 @@ export default function FeaturedCard({ code, phoneE164, images }: Props) {
                 </>
               )}
             </div>
-
+ 
             {hasMany && (
               <div className="flex items-center justify-between gap-3 px-4 py-3">
                 <button
@@ -313,11 +323,11 @@ export default function FeaturedCard({ code, phoneE164, images }: Props) {
                 >
                   Prev
                 </button>
-
+ 
                 <p className="text-xs text-white/70">
                   {zoomIndex + 1} / {safeImages.length}
                 </p>
-
+ 
                 <button
                   type="button"
                   onClick={nextZoom}

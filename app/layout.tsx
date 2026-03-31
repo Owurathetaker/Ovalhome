@@ -13,22 +13,25 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  metadataBase: new URL("https://ovalhome.vercel.app"),
-  title: "Oval Home — Luxury LED Mirrors",
+  title: "LED Mirrors in Accra, Ghana | Oval Home",
   description:
-    "Luxury LED mirrors with nationwide delivery. Browse designs and order easily on WhatsApp.",
-  openGraph: {
-    title: "Oval Home — Luxury LED Mirrors",
-    description:
-      "Luxury LED mirrors with nationwide delivery. Browse designs and order easily on WhatsApp.",
-    images: ["/og.jpg"],
-    type: "website",
-  },
-  icons: {
-    icon: "/favicon.ico",
-  },
+    "Shop LED mirrors in Accra, Ghana. Oval Home offers bathroom mirrors, decorative mirrors, vanity mirrors, and full-length mirrors with fast delivery in Accra and nationwide.",
   verification: {
     google: "w1QF-fXQRcZrAR4Oi9fKM8DVu5RZ9rJGQUtLdiDoyj4",
+  },
+  openGraph: {
+    title: "LED Mirrors in Accra, Ghana | Oval Home",
+    description:
+      "Shop LED mirrors in Accra, Ghana. Oval Home offers bathroom mirrors, decorative mirrors, vanity mirrors, and full-length mirrors with fast delivery in Accra and nationwide.",
+    images: ["https://ovalhome.vercel.app/og.jpg"],
+    type: "website",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "LED Mirrors in Accra, Ghana | Oval Home",
+    description:
+      "Shop LED mirrors in Accra, Ghana. Oval Home offers bathroom mirrors, decorative mirrors, vanity mirrors, and full-length mirrors with fast delivery in Accra and nationwide.",
+    images: ["https://ovalhome.vercel.app/og.jpg"],
   },
 };
 
@@ -37,35 +40,9 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const structuredData = {
-    "@context": "https://schema.org",
-    "@type": "LocalBusiness",
-    "@id": "https://ovalhome.vercel.app",
-    name: "Oval Home",
-    image: "https://ovalhome.vercel.app/og.jpg",
-    url: "https://ovalhome.vercel.app",
-    telephone: "+233554053999",
-    priceRange: "$$",
-    areaServed: "Ghana",
-    address: {
-      "@type": "PostalAddress",
-      addressLocality: "Accra",
-      addressCountry: "GH",
-    },
-    description:
-      "Oval Home supplies premium LED mirrors with fast delivery in Accra and nationwide delivery across Ghana.",
-    sameAs: ["https://wa.me/233554053999"],
-  };
-
   return (
     <html lang="en">
       <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
-        <script
-          type="application/ld+json"
-          dangerouslySetInnerHTML={{
-            __html: JSON.stringify(structuredData),
-          }}
-        />
         {children}
       </body>
     </html>

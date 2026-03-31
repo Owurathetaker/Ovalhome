@@ -12,8 +12,31 @@ function waLink(message?: string) {
 }
 
 export default function MirrorsInAccraPage() {
+  const webPageSchema = {
+    "@context": "https://schema.org",
+    "@type": "WebPage",
+    name: "LED Mirrors in Accra, Ghana | Oval Home",
+    url: "https://ovalhome.vercel.app/mirrors-in-accra",
+    description:
+      "Find LED mirrors in Accra, Ghana. Oval Home supplies bathroom mirrors, decorative mirrors, full-length mirrors, and modern wall mirrors with delivery available.",
+    about: {
+      "@type": "Thing",
+      name: "LED Mirrors in Accra",
+    },
+    provider: {
+      "@type": "HomeGoodsStore",
+      name: "Oval Home",
+      url: "https://ovalhome.vercel.app",
+    },
+  };
   return (
     <main className="min-h-screen bg-[#fbf7f2] text-slate-900">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify(webPageSchema),
+        }}
+      />
       <section className="mx-auto max-w-3xl px-4 py-10">
         <h1 className="text-2xl font-semibold md:text-3xl">
           LED Mirrors in Accra, Ghana

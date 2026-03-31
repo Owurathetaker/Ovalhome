@@ -160,9 +160,42 @@ function MiniCard({
  
 export default function Page() {
   const WA_LINK = waLink();
+   const localBusinessSchema = {
+    "@context": "https://schema.org",
+    "@type": "HomeGoodsStore",
+    name: "Oval Home",
+    image: "https://ovalhome.vercel.app/hero-mirror.jpg",
+    url: "https://ovalhome.vercel.app",
+    telephone: "+233554053999",
+    areaServed: ["Accra", "Ghana"],
+    description:
+      "Oval Home supplies premium LED mirrors and decorative mirrors in Accra and across Ghana. Browse modern bathroom mirrors, full-length mirrors, and wall mirrors with fast delivery.",
+    sameAs: [
+      SOCIALS.instagram,
+      SOCIALS.facebook,
+      SOCIALS.tiktok,
+    ],
+    makesOffer: PRODUCT_ORDER.map((code) => ({
+      "@type": "Offer",
+      itemOffered: {
+        "@type": "Product",
+        name: code,
+      },
+      priceCurrency: "GHS",
+      price: PRODUCT_PRICES[code],
+      availability: "https://schema.org/InStock",
+      url: "https://ovalhome.vercel.app/#designs",
+    })),
+  };
  
   return (
     <main className="min-h-screen bg-[#fbf7f2] text-slate-900">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify(localBusinessSchema),
+        }}
+      />
       <header className="sticky top-0 z-20 border-b border-black/5 bg-[#fbf7f2]/90 backdrop-blur">
         <div className="border-b border-black/5 bg-white/60">
           <div className="mx-auto max-w-6xl px-4 py-2 text-center text-[11px] text-slate-700">

@@ -224,19 +224,27 @@ export default function Page() {
             </p>
  
             <div className="mt-4 flex flex-wrap gap-3">
-              <a
-                href="#categories"
-                className="rounded-full border border-black/10 bg-white px-4 py-2 text-sm font-medium text-slate-900 shadow-sm hover:bg-black/[0.02]"
-              >
-                Browse categories
-              </a>
-              <a
-                href="#designs"
-                className="rounded-full border border-black/10 bg-white px-4 py-2 text-sm font-medium text-slate-900 shadow-sm hover:bg-black/[0.02]"
-              >
-                View all designs
-              </a>
-            </div>
+  <a
+    href="#categories"
+    className="rounded-full border border-black/10 bg-white px-4 py-2 text-sm font-medium text-slate-900 shadow-sm hover:bg-black/[0.02]"
+  >
+    Browse categories
+  </a>
+ 
+  <a
+    href="#designs"
+    className="rounded-full border border-black/10 bg-white px-4 py-2 text-sm font-medium text-slate-900 shadow-sm hover:bg-black/[0.02]"
+  >
+    View all designs
+  </a>
+ 
+  <a
+    href="/mirrors-in-accra"
+    className="rounded-full bg-slate-900 px-4 py-2 text-sm font-medium text-white"
+  >
+    LED Mirrors in Accra
+  </a>
+</div>
           </div>
         </div>
       </section>
@@ -355,6 +363,12 @@ export default function Page() {
             <p className="font-medium">Oval Home</p>
             <p className="text-xs text-slate-500">Luxury LED Mirrors</p>
           </div>
+          <a
+  href="/mirrors-in-accra"
+  className="text-xs text-slate-500 underline"
+>
+  LED mirrors in Accra
+</a>
  
           <div className="flex items-center gap-2">
             <SocialIcon href={SOCIALS.instagram} label="Instagram">

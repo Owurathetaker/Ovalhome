@@ -1,6 +1,6 @@
 // app/mirrors-in-accra/page.tsx
 
-import Link from "next/link";
+import type { Metadata } from "next";
 
 const WA_NUMBER = "233554053999";
 
@@ -10,6 +10,12 @@ function waLink(message?: string) {
     : "Hi Oval Home 👋🏽\nI want a mirror recommendation.\nLocation: ____\nSpace: ____\nBudget: ____";
   return `https://wa.me/${WA_NUMBER}?text=${encodeURIComponent(text)}`;
 }
+
+export const metadata: Metadata = {
+  title: "LED Mirrors in Accra, Ghana | Oval Home",
+  description:
+    "Find LED mirrors in Accra, Ghana. Shop bathroom mirrors, decorative mirrors, full-length mirrors, and modern wall mirrors from Oval Home.",
+};
 
 export default function MirrorsInAccraPage() {
   const webPageSchema = {
